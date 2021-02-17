@@ -3,8 +3,9 @@ import polka from "polka";
 import compression from "compression";
 import * as sapper from "@sapper/server";
 import { json } from "body-parser";
+require('dotenv').config();
 
-const { PORT, NODE_ENV } = process.env;
+const { PORT, NODE_ENV, DB_HOST, DB_USER, DB_PASS, DB_BASE } = process.env;
 const dev = NODE_ENV === "development";
 
 polka() // You can also use Express
