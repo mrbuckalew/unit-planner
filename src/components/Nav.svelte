@@ -1,12 +1,5 @@
 <script>
   export let segment;
-  // import { name } from "../stores";
-
-  // let name_value;
-
-  // const unsubscribe = name.subscribe((value) => {
-  //   name_value = value;
-  // });
 </script>
 
 <nav>
@@ -17,12 +10,11 @@
           src="southern-union-state-community-college.svg"
           alt="SUSCC logo"
         />
-
       </a>
     </div>
     <ul>
       <li class="link">
-        <a class:current={segment === undefined} href=".">home</a>
+        <a class:current={segment === "units"} href="units">home</a>
       </li>
       <li class="link">
         <a class:current={segment === "about"} href="about">about</a>

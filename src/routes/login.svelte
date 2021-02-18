@@ -1,44 +1,47 @@
+<!-- <script ✂prettier:content✂="CiAgaW1wb3J0IHsgbmFtZSwgdW5pdHMgfSBmcm9tICIuLi9zdG9yZXMiOwogIGltcG9ydCB7IGdvdG8gfSBmcm9tICJAc2FwcGVyL2FwcCI7CiAgaW1wb3J0IHsgb25Nb3VudCB9IGZyb20gInN2ZWx0ZSI7CgogIG9uTW91bnQoKCkgPT4gewogICAgbmFtZS5zZXQoIiIpOwogIH0pOwoKICBsZXQgcHdkID0gIiI7CiAgY29uc3QgbG9naW5DbGljayA9IGFzeW5jICgpID0+IHsKICAgIGNvbnNvbGUubG9nKGBMb2dnaW5nIGluIHdpdGggJHtKU09OLnN0cmluZ2lmeSh7IHB3ZCB9KX1gKTsKICAgIGNvbnN0IHJlcyA9IGF3YWl0IGZldGNoKCJ1c2Vycy9sb2dpbiIsIHsKICAgICAgbWV0aG9kOiAiUE9TVCIsCiAgICAgIGNyZWRlbnRpYWxzOiAiaW5jbHVkZSIsCiAgICAgIGhlYWRlcnM6IHsKICAgICAgICAiQ29udGVudC1UeXBlIjogImFwcGxpY2F0aW9uL2pzb24iLAogICAgICB9LAogICAgICBib2R5OiBKU09OLnN0cmluZ2lmeSh7IHB3ZCB9KSwKICAgIH0pOwogICAgY29uc3QganNvbiA9IGF3YWl0IHJlcy5qc29uKCk7CiAgICBpZiAoIWpzb24uZXJyb3IpIHsKICAgICAgY29uc29sZS5sb2coYFJldHVybmVkICR7SlNPTi5zdHJpbmdpZnkoanNvbil9YCk7CiAgICAgIG5hbWUuc2V0KGAke2pzb24udXNlci5maXJzdF9uYW1lfSAke2pzb24udXNlci5sYXN0X25hbWV9YCk7CiAgICAgIHVuaXRzLnNldChbLi4uanNvbi51c2VyLnVuaXRzXSk7CiAgICAgIGlmIChqc29uLnVzZXIudW5pdHMubGVuZ3RoID4gMSkgewogICAgICAgIGdvdG8oIi91bml0cyIpOwogICAgICB9CiAgICAgIGlmIChqc29uLnVzZXIudW5pdHMubGVuZ3RoID09PSAxKSB7CiAgICAgICAgZ290byhgL3VuaXRzLyR7anNvbi51c2VyLnVuaXRzWzBdfWApOwogICAgICB9CiAgICB9CgogICAgcHdkID0gIiI7CiAgfTsK" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=" ✂prettier:content✂="e30=">{}</script> -->
 <script>
-  import { name, units } from "../stores";
-  import { goto } from "@sapper/app";
-  import { onMount } from "svelte";
-
-  onMount(() => {
-    name.set("");
-  });
-
+  import { goto, stores } from "@sapper/app";
+  const { session } = stores();
   let pwd = "";
-  const loginClick = async () => {
-    console.log(`Logging in with ${JSON.stringify({ pwd })}`);
-    const res = await fetch("users/login", {
+  let error;
+
+  const handleLogin = async () => {
+    const response = await fetch("/api/login", {
       method: "POST",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify({ pwd }),
     });
-    const json = await res.json();
-    if (!json.error) {
-      console.log(JSON.stringify(json));
-      name.set(json.name);
-      units.set([...json.units]);
-      goto("/");
-    }
 
-    pwd = "";
+    const parsed = await response.json();
+
+    // console.log(`RESPONSE ${JSON.stringify(parsed)}`);
+
+    if (parsed.error) {
+      // console.error("LOGIN ERROR!");
+      error = parsed.error;
+    } else {
+      // console.log("LOGIN FINE");
+      $session.token = parsed.token;
+      window.localStorage.setItem("planning-token", parsed.token);
+      goto("/units");
+    }
   };
 </script>
 
 <div>
-  <form>
+  <form on:submit|preventDefault={handleLogin} method="post">
     <label for="pwd">Unit Planning Password</label>
     <input type="password" id="pwd" bind:value={pwd} />
-    <button on:click|preventDefault={loginClick} disabled={pwd.length < 4}>
-      Log In
-    </button>
+    <button type="submit" disabled={pwd.length < 4}> Log In </button>
   </form>
 </div>
+
+{#if error}
+  <p>{error}</p>
+{/if}
 
 <style>
   div {

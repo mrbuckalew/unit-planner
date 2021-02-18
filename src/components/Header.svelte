@@ -13,7 +13,7 @@
 <section>
   <div class="nav-container">
     <div>
-      <a href="/">
+      <a href="/units">
         <img
           src="southern-union-state-community-college.svg"
           alt="SUSCC logo"
@@ -26,27 +26,29 @@
   </div>
 </section>
 
-<nav>
-  <ul>
-    <li class="link">
-      <a class:current={segment === undefined} href=".">home</a>
-    </li>
-    <li class="link">
-      <a class:current={segment === "about"} href="about">about</a>
-    </li>
-    <li class="link">
-      <a href="/login">logoff</a>
-    </li>
-    <li class="hamburger">
-      <div />
-      <div />
-      <div />
-    </li>
-  </ul>
-  <div id="user">
-    {name_value}
-  </div>
-</nav>
+{#if segment !== "login"}
+  <nav>
+    <ul>
+      <li class="link">
+        <a class:current={segment === "units"} href="units">home</a>
+      </li>
+      <li class="link">
+        <a class:current={segment === "about"} href="about">about</a>
+      </li>
+      <li class="link">
+        <a href="/login">logoff</a>
+      </li>
+      <li class="hamburger">
+        <div />
+        <div />
+        <div />
+      </li>
+    </ul>
+    <div id="user">
+      {name_value}
+    </div>
+  </nav>
+{/if}
 
 <style>
   ul {

@@ -1,3 +1,13 @@
+<script context="module">
+  export async function preload(page, session) {
+    const { token } = session;
+
+    if (!token) {
+      return this.redirect(302, "login");
+    }
+  }
+</script>
+
 <script>
   // import successkid from "images/successkid.jpg";
   import { units } from "../stores";
